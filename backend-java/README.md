@@ -107,7 +107,7 @@ All keys live in `src/main/resources/application.properties`.
 
 | Key | Purpose | Safe example / notes |
 |---|---|---|
-| `server.port` | HTTP port | `5000` |
+| `server.port` | HTTP port | `${PORT:5000}` — follows the `PORT` env var when set (Render/Docker default **10000**); bare local runs fall back to `5000` |
 | `spring.datasource.url` | JDBC URL | `jdbc:mysql://localhost:3306/campuscycle?...` |
 | `spring.datasource.username` | DB user | `<your-mysql-user>` (e.g. `root` locally) |
 | `spring.datasource.password` | DB password | `<your-mysql-password>` — **supply locally, never commit real values** |
@@ -360,3 +360,56 @@ themselves; MySQL must be reachable through the backend. A browser-level suite
   elsewhere.
 - **No admin/moderator UI**; role fields exist but are unused by the frontend.
 - **Port 5000 conflict:** the Node backend and this app share the port — run only one.
+
+## 13. Docker and Render deployment
+
+`backend-java/Dockerfile` is a **multi-stage build**:
+
+1. **Build stage** — `maven:3.9-eclipse-temurin-17` (Maven + Java 17) runs
+   `mvn clean package -DskipTests`. Because `application.properties` is gitignored,
+   the stage copies `application.properties.example` into place when building from a
+   fresh clone (e.g. Render's Git checkout).
+2. **Runtime stage** — `eclipse-temurin:17-jre-jammy` (Java 17 runtime) copies only
+   the fat JAR and starts it with `java -jar`.
+
+### Port behaviour
+
+`server.port=${PORT:5000}` — the app follows the **`PORT` environment variable**:
+
+| Context | `PORT` value | Listening port |
+|---|---|---|
+| Render (sets `PORT` for you) | `10000` (Render default) | **10000** |
+| Docker container (image sets `ENV PORT=10000`) | `10000` | **10000** |
+| `docker run -e PORT=8080 …` | `8080` | `8080` |
+| Bare local `java -jar …` | unset | `5000` (local dev default) |
+
+The local default of `5000` is kept only so the Vite proxy and the regression suites
+keep working without changes; containers never assume it.
+
+### Build and run the image
+
+```bash
+# from the repository root (or backend-java/ — same context)
+docker build -t campuscycle-backend backend-java
+
+docker run --rm -p 10000:10000 \
+  -e SPRING_DATASOURCE_URL='jdbc:mysql://<db-host>:3306/campuscycle?...' \
+  -e SPRING_DATASOURCE_USERNAME='<your-mysql-user>' \
+  -e SPRING_DATASOURCE_PASSWORD='<your-mysql-password>' \
+  -e APP_JWT_SECRET='<generate-a-long-random-secret>' \
+  campuscycle-backend
+
+curl http://localhost:10000/api/health
+```
+
+### Render notes
+
+- Render injects `PORT` automatically; the container listens on it (defaults to
+  `10000` if you override it).
+- Set environment variables in the Render dashboard: `SPRING_DATASOURCE_URL`,
+  `SPRING_DATASOURCE_USERNAME`, `SPRING_DATASOURCE_PASSWORD`, `APP_JWT_SECRET`
+  (never bake them into the image).
+- Use `http://localhost:10000/api/health` (Render will call `/api/health`) as the
+  health-check path.
+- A MySQL instance reachable from Render is required (Render's built-in MySQL or an
+  external one); `ddl-auto=update` creates the schema on first boot.
