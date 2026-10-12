@@ -1,0 +1,31 @@
+# ---- Dependencies / build output ----
+node_modules/
+backend-java/target/
+frontend/dist/
+*.tsbuildinfo
+
+# ---- Logs & temp files ----
+*.log
+logs/
+npm-debug.log*
+*.tmp
+~$*
+
+# ---- Secrets / local configuration ----
+.env
+.env.*
+!.env.example
+backend-java/src/main/resources/application.properties
+
+# ---- IDE / editor metadata ----
+.idea/
+*.iml
+.vscode/
+.settings/
+.classpath
+.project
+*.swp
+
+# ---- OS junk ----
+Thumbs.db
+.DS_Store

@@ -1,0 +1,29 @@
+{
+  "name": "campuscycle-frontend",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "react-router-dom": "^7.6.1",
+    "axios": "^1.7.9",
+    "lucide-react": "^0.475.0",
+    "react-hot-toast": "^2.5.2",
+    "socket.io-client": "^4.8.1",
+    "date-fns": "^4.1.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.4",
+    "vite": "^6.0.0",
+    "tailwindcss": "^3.4.17",
+    "@tailwindcss/forms": "^0.5.10",
+    "postcss": "^8.5.1",
+    "autoprefixer": "^10.4.20"
+  }
+}

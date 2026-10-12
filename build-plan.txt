@@ -1,0 +1,641 @@
+================================================================================
+                    CAMPUSCYCLE - BUILD PLAN & REFERENCE
+         Campus Resource Sharing & Exchange Platform (MERN Stack)
+================================================================================
+
+TECH STACK
+--------------------------------------------------------------------------------
+| Layer        | Technology                                    |
+|------------- |-----------------------------------------------|
+| Frontend     | React + Vite + Tailwind CSS + React Router     |
+| Backend      | Node.js + Express.js                           |
+| Database     | MongoDB + Mongoose                             |
+| Auth         | JWT + bcrypt (university email domain)         |
+| File Storage | Cloudinary (free tier) or local uploads        |
+| State        | React Context API                              |
+| Real-time    | Socket.io (messaging)                          |
+
+================================================================================
+PROJECT STRUCTURE
+================================================================================
+
+CampusCycle/
+├── backend/
+│   ├── config/
+│   │   ├── db.js                 # MongoDB connection
+│   │   └── config.js             # Environment variables
+│   ├── models/
+│   │   ├── User.js
+│   │   ├── Listing.js
+│   │   ├── Domain.js
+│   │   ├── Tag.js
+│   │   ├── Request.js
+│   │   ├── Message.js
+│   │   ├── Conversation.js
+│   │   ├── Reservation.js
+│   │   ├── Rating.js
+│   │   ├── Report.js
+│   │   ├── Ticket.js
+│   │   └── Notification.js
+│   ├── routes/
+│   │   ├── auth.js
+│   │   ├── users.js
+│   │   ├── listings.js
+│   │   ├── domains.js
+│   │   ├── tags.js
+│   │   ├── requests.js
+│   │   ├── messages.js
+│   │   ├── reservations.js
+│   │   ├── ratings.js
+│   │   ├── reports.js
+│   │   ├── tickets.js
+│   │   └── notifications.js
+│   ├── controllers/
+│   │   ├── authController.js
+│   │   ├── userController.js
+│   │   ├── listingController.js
+│   │   ├── domainController.js
+│   │   ├── tagController.js
+│   │   ├── requestController.js
+│   │   ├── messageController.js
+│   │   ├── reservationController.js
+│   │   ├── ratingController.js
+│   │   ├── reportController.js
+│   │   ├── ticketController.js
+│   │   └── notificationController.js
+│   ├── middleware/
+│   │   ├── auth.js               # JWT verification
+│   │   ├── errorHandler.js       # Global error handler
+│   │   └── upload.js             # Multer/Cloudinary config
+│   ├── seeds/
+│   │   └── domains.js            # Seed domain/category data
+│   ├── server.js
+│   ├── package.json
+│   └── .env
+├── frontend/
+│   ├── public/
+│   ├── src/
+│   │   ├── assets/
+│   │   ├── components/
+│   │   │   ├── layout/
+│   │   │   │   ├── Navbar.jsx
+│   │   │   │   ├── Sidebar.jsx
+│   │   │   │   └── Footer.jsx
+│   │   │   ├── common/
+│   │   │   │   ├── Button.jsx
+│   │   │   │   ├── Input.jsx
+│   │   │   │   ├── Card.jsx
+│   │   │   │   ├── Modal.jsx
+│   │   │   │   ├── Badge.jsx
+│   │   │   │   ├── Avatar.jsx
+│   │   │   │   └── Spinner.jsx
+│   │   │   ├── listings/
+│   │   │   │   ├── ListingCard.jsx
+│   │   │   │   ├── ListingForm.jsx
+│   │   │   │   ├── ListingGrid.jsx
+│   │   │   │   └── ListingDetail.jsx
+│   │   │   ├── auth/
+│   │   │   │   ├── LoginForm.jsx
+│   │   │   │   └── RegisterForm.jsx
+│   │   │   ├── search/
+│   │   │   │   ├── SearchBar.jsx
+│   │   │   │   └── FilterPanel.jsx
+│   │   │   ├── profile/
+│   │   │   │   ├── ProfileCard.jsx
+│   │   │   │   └── ProfileEdit.jsx
+│   │   │   ├── messaging/
+│   │   │   │   ├── ConversationList.jsx
+│   │   │   │   ├── ChatWindow.jsx
+│   │   │   │   └── MessageBubble.jsx
+│   │   │   ├── modals/
+│   │   │   │   ├── ReportModal.jsx
+│   │   │   │   └── ReserveModal.jsx
+│   │   │   └── dashboard/
+│   │   │       ├── AdminPanel.jsx
+│   │   │       ├── ReportsQueue.jsx
+│   │   │       └── TicketList.jsx
+│   │   ├── pages/
+│   │   │   ├── Home.jsx
+│   │   │   ├── Login.jsx
+│   │   │   ├── Register.jsx
+│   │   │   ├── Profile.jsx
+│   │   │   ├── ListingDetail.jsx
+│   │   │   ├── CreateListing.jsx
+│   │   │   ├── EditListing.jsx
+│   │   │   ├── BrowseListings.jsx
+│   │   │   ├── Search.jsx
+│   │   │   ├── DomainPage.jsx
+│   │   │   ├── Requests.jsx
+│   │   │   ├── CreateRequest.jsx
+│   │   │   ├── Messages.jsx
+│   │   │   ├── Wishlist.jsx
+│   │   │   ├── Notifications.jsx
+│   │   │   ├── MyListings.jsx
+│   │   │   ├── MyTransactions.jsx
+│   │   │   ├── Dashboard.jsx       # Admin/Moderator
+│   │   │   ├── Support.jsx
+│   │   │   └── NotFound.jsx
+│   │   ├── context/
+│   │   │   ├── AuthContext.jsx
+│   │   │   └── NotificationContext.jsx
+│   │   ├── hooks/
+│   │   │   ├── useAuth.js
+│   │   │   └── useFetch.js
+│   │   ├── utils/
+│   │   │   ├── api.js              # Axios instance
+│   │   │   ├── helpers.js
+│   │   │   └── constants.js
+│   │   ├── App.jsx
+│   │   ├── main.jsx
+│   │   └── index.css
+│   ├── index.html
+│   ├── package.json
+│   ├── vite.config.js
+│   ├── tailwind.config.js
+│   └── postcss.config.js
+└── package.json                    # Root package.json (scripts)
+
+================================================================================
+DATABASE SCHEMAS (Mongoose)
+================================================================================
+
+--- USER ---
+{
+  name:           String (required),
+  email:          String (required, unique, university domain),
+  password:       String (hashed, required),
+  avatar:         String (URL),
+  bio:            String,
+  phone:          String,
+  verified:       Boolean (default: false),
+  role:           Enum ['student', 'moderator', 'admin'] (default: 'student'),
+  reputation: {
+    rating:           Number (default: 0),
+    totalRatings:      Number (default: 0),
+    completedExchanges: Number (default: 0),
+    listings:          Number (default: 0)
+  },
+  followedTags:   [ObjectId ref Tag],
+  wishlist:       [ObjectId ref Listing],
+  isActive:       Boolean (default: true),
+  suspendedUntil: Date,
+  createdAt:      Date
+}
+
+--- DOMAIN ---
+{
+  name:       String (required),
+  slug:       String (required, unique),
+  icon:       String,
+  categories: [{
+    name:   String,
+    slug:   String,
+    items:  [{ name: String, slug: String, defaultTags: [String] }]
+  }]
+}
+
+Predefined domains:
+1. Academics
+2. Projects & Electronics
+3. Hostel & Campus Life
+4. Sports & Fitness
+5. Other Student Resources
+
+--- LISTING ---
+{
+  owner:          ObjectId ref User (required),
+  title:          String (required),
+  description:    String (required),
+  photos:         [String] (URLs),
+  type:           Enum ['sell', 'rent', 'lend', 'donate'] (required),
+  price:          Number,
+  rentPrice:      Number,
+  rentDuration:   String,
+  deposit:        Number,
+  condition:      Enum ['new', 'like_new', 'good', 'fair', 'poor'],
+  availability:   String,
+  domain:         ObjectId ref Domain,
+  category:       String,
+  subcategory:    String,
+  tags:           [String],
+  status:         Enum ['available', 'reserved', 'sold', 'rented', 'borrowed', 'donated', 'unavailable'],
+  location:       String (campus pickup point),
+  views:          Number (default: 0),
+  reservedBy:     ObjectId ref User,
+  reservedUntil:  Date,
+  createdAt:      Date,
+  updatedAt:      Date
+}
+
+--- REQUEST ---
+{
+  requester:      ObjectId ref User (required),
+  title:          String (required),
+  description:    String,
+  type:           Enum ['buy', 'rent', 'borrow'] (required),
+  requiredDate:   Date,
+  duration:       String,
+  domain:         ObjectId ref Domain,
+  category:       String,
+  tags:           [String],
+  status:         Enum ['active', 'matched', 'fulfilled', 'expired', 'cancelled'],
+  matchedListing: ObjectId ref Listing,
+  createdAt:      Date
+}
+
+--- TAG ---
+{
+  name:       String (required, unique, lowercase),
+  slug:       String (required, unique),
+  count:      Number (default: 0),
+  followers:  [ObjectId ref User]
+}
+
+--- CONVERSATION ---
+{
+  participants:   [ObjectId ref User] (required, max 2),
+  listing:        ObjectId ref Listing,
+  lastMessage:    String,
+  lastMessageAt:  Date,
+  createdAt:      Date
+}
+
+--- MESSAGE ---
+{
+  conversation:   ObjectId ref Conversation (required),
+  sender:         ObjectId ref User (required),
+  content:        String (required),
+  read:           Boolean (default: false),
+  reported:       Boolean (default: false),
+  reportReason:   String,
+  createdAt:      Date
+}
+
+--- RESERVATION ---
+{
+  listing:    ObjectId ref Listing (required),
+  user:       ObjectId ref User (required),
+  expiresAt:  Date (required),
+  status:     Enum ['active', 'expired', 'completed'],
+  createdAt:  Date
+}
+
+--- RATING ---
+{
+  from:       ObjectId ref User (required),
+  to:         ObjectId ref User (required),
+  listing:    ObjectId ref Listing (required),
+  score:      Number (1-5, required),
+  comment:    String,
+  type:       Enum ['seller', 'buyer', 'lender', 'borrower'],
+  createdAt:  Date
+}
+
+--- REPORT ---
+{
+  reporter:       ObjectId ref User (required),
+  type:           Enum ['listing', 'message', 'user'] (required),
+  targetId:       ObjectId (required),
+  reason:         Enum ['harassment', 'threatening', 'scam', 'prohibited', 'spam', 'inappropriate', 'other'],
+  explanation:    String,
+  context:        Object (surrounding messages for message reports),
+  status:         Enum ['pending', 'under_review', 'resolved', 'dismissed'],
+  moderator:      ObjectId ref User,
+  decision:       String,
+  action:         Enum ['dismiss', 'warn', 'remove_content', 'restrict', 'temp_suspend', 'perm_suspend'],
+  history:        [{
+    moderator:  ObjectId ref User,
+    action:     String,
+    decision:   String,
+    reason:     String,
+    timestamp:  Date
+  }],
+  createdAt:      Date
+}
+
+--- TICKET ---
+{
+  user:           ObjectId ref User (required),
+  category:       Enum ['transaction', 'account', 'appeal', 'harassment', 'general'],
+  description:    String (required),
+  attachments:    [String],
+  status:         Enum ['open', 'in_review', 'waiting_user', 'waiting_action', 'resolved', 'closed'],
+  assignedTo:     ObjectId ref User,
+  messages:       [{
+    sender:     ObjectId ref User,
+    content:    String,
+    createdAt:  Date
+  }],
+  resolution:     String,
+  createdAt:      Date
+}
+
+--- NOTIFICATION ---
+{
+  user:       ObjectId ref User (required),
+  type:       String (required),
+  title:      String (required),
+  message:    String (required),
+  link:       String,
+  read:       Boolean (default: false),
+  createdAt:  Date
+}
+
+================================================================================
+API ROUTES
+================================================================================
+
+--- AUTH ---
+POST   /api/auth/register          Register new user
+POST   /api/auth/login             Login user
+GET    /api/auth/me                Get current user (protected)
+POST   /api/auth/verify-email      Verify university email
+
+--- USERS ---
+GET    /api/users/:id              Get user profile
+PUT    /api/users/profile          Update own profile (protected)
+GET    /api/users/:id/listings     Get user's listings
+GET    /api/users/:id/ratings      Get user's ratings
+
+--- LISTINGS ---
+GET    /api/listings               Get all listings (with filters)
+GET    /api/listings/:id           Get single listing
+POST   /api/listings               Create listing (protected)
+PUT    /api/listings/:id           Update listing (protected, owner)
+DELETE /api/listings/:id           Delete listing (protected, owner)
+PUT    /api/listings/:id/status    Update listing status (protected)
+GET    /api/listings/search        Search listings
+GET    /api/listings/domain/:slug  Get listings by domain
+
+--- DOMAINS ---
+GET    /api/domains                Get all domains
+GET    /api/domains/:slug          Get domain with categories
+GET    /api/domains/:slug/categories/:cat  Get subcategories/items
+
+--- TAGS ---
+GET    /api/tags                   Get popular tags
+GET    /api/tags/:slug             Get tag with listings
+POST   /api/tags/:id/follow        Follow/unfollow tag (protected)
+GET    /api/tags/search/:query     Search tags
+
+--- REQUESTS ---
+GET    /api/requests               Get all requests (with filters)
+GET    /api/requests/:id           Get single request
+POST   /api/requests               Create request (protected)
+PUT    /api/requests/:id           Update request (protected, owner)
+DELETE /api/requests/:id           Cancel request (protected, owner)
+
+--- MESSAGES ---
+GET    /api/conversations                  Get user's conversations (protected)
+POST   /api/conversations                  Start conversation (protected)
+GET    /api/conversations/:id/messages     Get messages (protected)
+POST   /api/conversations/:id/messages     Send message (protected)
+PUT    /api/messages/:id/read              Mark as read (protected)
+
+--- RESERVATIONS ---
+POST   /api/reservations                   Reserve listing (protected)
+GET    /api/reservations                   Get user's reservations (protected)
+PUT    /api/reservations/:id/cancel        Cancel reservation (protected)
+PUT    /api/reservations/:id/complete      Complete reservation (protected)
+
+--- RATINGS ---
+POST   /api/ratings                        Create rating (protected)
+GET    /api/ratings/user/:id               Get ratings for user
+GET    /api/ratings/listing/:id            Get ratings for listing
+
+--- REPORTS ---
+POST   /api/reports                        Create report (protected)
+GET    /api/reports                         Get reports queue (moderator)
+PUT    /api/reports/:id                     Update report status (moderator)
+GET    /api/reports/my                      Get my reports (protected)
+
+--- TICKETS ---
+POST   /api/tickets                        Create ticket (protected)
+GET    /api/tickets                         Get user's tickets (protected)
+GET    /api/tickets/all                     Get all tickets (admin)
+PUT    /api/tickets/:id                     Update ticket (moderator)
+POST   /api/tickets/:id/messages            Add message to ticket (protected)
+
+--- NOTIFICATIONS ---
+GET    /api/notifications                   Get user's notifications (protected)
+PUT    /api/notifications/:id/read          Mark notification read (protected)
+PUT    /api/notifications/read-all          Mark all read (protected)
+GET    /api/notifications/unread-count      Get unread count (protected)
+
+================================================================================
+ENVIRONMENT VARIABLES (.env)
+================================================================================
+
+# Backend
+PORT=5000
+MONGODB_URI=mongodb://localhost:27017/campuscycle
+JWT_SECRET=your_jwt_secret_key_here
+JWT_EXPIRE=7d
+
+# University email domain
+UNIVERSITY_EMAIL_DOMAIN=@youruniversity.edu
+
+# Cloudinary (for image uploads)
+CLOUDINARY_CLOUD_NAME=your_cloud_name
+CLOUDINARY_API_KEY=your_api_key
+CLOUDINARY_API_SECRET=your_api_secret
+
+# Frontend (VITE_)
+VITE_API_URL=http://localhost:5000/api
+
+================================================================================
+NPM PACKAGES REQUIRED
+================================================================================
+
+--- Backend (cd backend && npm install) ---
+express
+mongoose
+bcryptjs
+jsonwebtoken
+cors
+dotenv
+express-validator
+multer
+cloudinary
+socket.io
+socket.io-client
+
+Dev dependencies:
+nodemon
+
+--- Frontend (cd frontend && npm create vite@latest . -- --template react) ---
+react
+react-dom
+react-router-dom
+axios
+tailwindcss
+@tailwindcss/forms
+postcss
+autoprefixer
+lucide-react          # Icons
+react-hot-toast       # Notifications
+socket.io-client
+date-fns              # Date formatting
+
+--- Install Tailwind CSS ---
+npm install -D tailwindcss postcss autoprefixer
+npx tailwindcss init -p
+
+================================================================================
+PHASE BREAKDOWN (3 WEEKS)
+================================================================================
+
+PHASE 1: FOUNDATION (Week 1)
+--------------------------------------------------------------------------------
+Day 1-2: Project Setup
+  [x] Initialize MERN project structure
+  [x] Set up Express server with middleware
+  [x] Configure MongoDB connection
+  [x] Set up Vite + React + Tailwind
+  [x] Create base layout components (Navbar)
+  [x] Test server & database connection
+
+Day 3-4: Authentication
+  [x] User registration with university email domain validation
+  [x] Login/logout with JWT
+  [x] Protected routes middleware
+  [x] Auth context for frontend
+  [x] Profile page (view/edit)
+
+Day 5-7: Listings CRUD
+  [x] Create Listing form (all fields)
+  [x] Listing detail page
+  [x] Listing grid/browse page
+  [x] Edit/delete listings
+  [ ] Image upload to Cloudinary
+  [x] Domain/category seed data
+
+PHASE 2: CORE FEATURES (Week 2)
+--------------------------------------------------------------------------------
+Day 8-9: Search & Discovery
+  - Search bar with keyword search
+  - Filter by domain, category, type, price, condition
+  - Tag-based search
+  - Listing cards with status badges
+
+Day 10-11: Tags & Requests
+  - Tag system (create, follow, browse)
+  - Resource request creation & listing
+  - Request browsing page
+  - Basic matching logic (new listing -> existing requests)
+
+Day 12-14: Enhanced Listings
+  - Reservation system
+  - Status management (mark as sold/rented/etc)
+  - Wishlist functionality
+  - Follow tag notifications
+
+PHASE 3: COMMUNICATION & SAFETY (Week 3)
+--------------------------------------------------------------------------------
+Day 15-16: Messaging
+  - Conversation list
+  - Real-time chat with Socket.io
+  - Message reporting
+
+Day 17-18: Ratings & Reporting
+  - Post-exchange rating system
+  - Report listing/message/user
+  - Moderator queue (basic)
+
+Day 19-21: Dashboard & Polish
+  - Admin/moderator dashboard (view reports, users, listings)
+  - Notification system
+  - Support ticket system
+  - Final testing and bug fixes
+
+================================================================================
+SEED DATA: DOMAINS & CATEGORIES
+================================================================================
+
+1. Academics
+   - Books (textbooks, reference books, novels)
+   - Calculators (scientific, graphing)
+   - Laboratory Equipment (microscopes, slides)
+   - Lab Coats
+   - Drawing Materials (rulers, compasses, drafters)
+   - Stationery (bulk pens, notebooks)
+
+2. Projects & Electronics
+   - Arduino (Uno, Mega, Nano)
+   - Raspberry Pi (3, 4, Zero)
+   - Sensors (temperature, ultrasonic, IR)
+   - Breadboards & Jumper Wires
+   - Tools (soldering iron, multimeter)
+   - Cables & Adapters (USB, HDMI, power)
+   - Components (resistors, LEDs, capacitors)
+
+3. Hostel & Campus Life
+   - Study Tables
+   - Chairs
+   - Lamps & Lights
+   - Extension Boards & Chargers
+   - Room Essentials (bedsheets, pillows)
+   - Kitchen Items (kettle, utensils)
+
+4. Sports & Fitness
+   - Cycles
+   - Sports Equipment (cricket, football, badminton)
+   - Fitness Accessories (dumbbells, resistance bands)
+   - Sports Wear
+
+5. Other Student Resources
+   - Notes & Study Material
+   - Printouts & Projects
+   - Event Equipment
+   - Miscellaneous
+
+================================================================================
+KEY WORKFLOWS
+================================================================================
+
+WORKFLOW A: Search & Follow Tag
+  Search #coat -> No listing -> Follow #coat -> New listing appears
+  -> Match detected -> Notification sent -> Student opens listing
+
+WORKFLOW B: Create Request
+  Student specifies item + type + date -> Request stored as Active
+  -> New listing matches -> Notification sent -> Connection made
+
+WORKFLOW C: Complete Exchange
+  Browse -> Open listing -> Check details -> Chat -> Negotiate
+  -> Reserve -> Meet at campus pickup -> Complete -> Rate
+
+WORKFLOW D: Report & Moderation
+  User reports -> Select reason + explanation -> Report enters queue
+  -> Moderator reviews context -> Decides action -> History recorded
+
+WORKFLOW E: Support Ticket
+  User creates ticket -> Selects category -> Describes problem
+  -> Attaches evidence -> Moderator investigates -> Resolution recorded
+
+================================================================================
+CAMPUS PICKUP LOCATIONS (seed data)
+================================================================================
+
+1. Library Entrance
+2. Academic Block Lobby
+3. Main Gate
+4. Hostel Gate
+5. Cafeteria
+6. Sports Complex
+7. Computer Lab Building
+8. Admin Block
+
+================================================================================
+STATUS VALUES REFERENCE
+================================================================================
+
+Listings:    available | reserved | sold | rented | borrowed | donated | unavailable
+Requests:    active | matched | fulfilled | expired | cancelled
+Reservations: active | expired | completed
+Reports:     pending | under_review | resolved | dismissed
+Tickets:     open | in_review | waiting_user | waiting_action | resolved | closed
+
+================================================================================
+                          END OF BUILD PLAN
+================================================================================
