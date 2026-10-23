@@ -725,39 +725,48 @@ SUPPLY → DEMAND → DISCOVERY → MATCHING → EXCHANGE/RENTAL → RATING & HI
 ## ⚙️ Setup & Installation
 
 ### Prerequisites
-- Node.js (v18+)
-- MongoDB (local or Atlas)
-- npm or yarn
+- Node.js (v18+) and npm
+- MongoDB running locally on the default port `27017` (e.g. the `MongoDB` Windows service, or `mongod`)
 
 ### Backend Setup
 ```bash
 cd backend
-npm install
-# Configure .env file
-npm run dev
+npm install        # install dependencies
+# create .env (see Environment Variables below)
+npm run seed       # seed the 5 domains / 17 categories (safe to re-run)
+npm start          # starts the API on http://localhost:5000
 ```
+During development you can use `npm run dev` (nodemon auto-restart) instead of `npm start`.
+The API is healthy when `GET http://localhost:5000/api/health` returns HTTP 200.
 
 ### Frontend Setup
 ```bash
 cd frontend
 npm install
-npm run dev
+npm run dev -- --host 127.0.0.1
 ```
+Opens the app at `http://127.0.0.1:3000`. The Vite dev server proxies `/api/*` to
+`http://localhost:5000`, so the frontend needs no extra configuration.
 
 ### Seed Database
 ```bash
 cd backend
 npm run seed
 ```
+Clears and recreates only the `domains` collection — users, listings, requests and
+reservations are never touched.
 
 ### Environment Variables (.env)
+Create `backend/.env` (gitignored — never commit it):
 ```
 PORT=5000
 MONGODB_URI=mongodb://localhost:27017/campuscycle
 JWT_SECRET=your_secret_key
 JWT_EXPIRE=7d
-UNIVERSITY_EMAIL_DOMAIN=@university.edu
+UNIVERSITY_EMAIL_DOMAIN=@your-university.edu
 ```
+Optional (image uploads): `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET`.
+Registration only accepts university email addresses matching `UNIVERSITY_EMAIL_DOMAIN`.
 
 ---
 
