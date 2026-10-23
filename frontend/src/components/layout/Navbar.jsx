@@ -2,25 +2,42 @@ import { Link } from 'react-router-dom'
 import { Recycle, Search, Bell, Heart, MessageCircle, User, Plus, Menu, X, LogOut } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import { useAuth } from '../../context/AuthContext'
+import { useSocket } from '../../context/SocketContext'
 import api from '../../utils/api'
 
 function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [unreadCount, setUnreadCount] = useState(0)
   const [wishlistCount, setWishlistCount] = useState(0)
+  const [msgUnread, setMsgUnread] = useState(0)
   const { user, logout } = useAuth()
+  const socket = useSocket()
 
   useEffect(() => {
     if (user) {
       fetchUnreadCount()
       fetchWishlistCount()
+      fetchMsgUnread()
       const interval = setInterval(() => {
         fetchUnreadCount()
         fetchWishlistCount()
+        fetchMsgUnread()
       }, 30000)
       return () => clearInterval(interval)
     }
   }, [user])
+
+  useEffect(() => {
+    if (socket) {
+      const refresh = () => fetchMsgUnread()
+      socket.on('message:new', refresh)
+      socket.on('message:read', refresh)
+      return () => {
+        socket.off('message:new', refresh)
+        socket.off('message:read', refresh)
+      }
+    }
+  }, [socket])
 
   const fetchUnreadCount = async () => {
     try {
@@ -35,6 +52,15 @@ function Navbar() {
     try {
       const res = await api.get('/users/me/wishlist/count')
       setWishlistCount(res.data.count)
+    } catch (error) {
+      // silent
+    }
+  }
+
+  const fetchMsgUnread = async () => {
+    try {
+      const res = await api.get('/conversations/unread-count')
+      setMsgUnread(res.data.count)
     } catch (error) {
       // silent
     }
@@ -86,8 +112,13 @@ function Navbar() {
                     </span>
                   )}
                 </Link>
-                <Link to="/messages" className="p-2 text-gray-600 hover:text-gray-900">
+                <Link to="/messages" className="relative p-2 text-gray-600 hover:text-gray-900">
                   <MessageCircle className="h-5 w-5" />
+                  {msgUnread > 0 && (
+                    <span className="absolute -top-1 -right-1 h-4 w-4 bg-red-500 rounded-full text-xs text-white flex items-center justify-center">
+                      {msgUnread > 9 ? '9+' : msgUnread}
+                    </span>
+                  )}
                 </Link>
                 <Link
                   to="/create-listing"
@@ -149,7 +180,7 @@ function Navbar() {
                   + Sell Item
                 </Link>
                 <Link to="/messages" className="block px-3 py-2 text-gray-600 hover:bg-gray-50 rounded-lg">
-                  Messages
+                  Messages {msgUnread > 0 && `(${msgUnread})`}
                 </Link>
                 <Link to="/notifications" className="block px-3 py-2 text-gray-600 hover:bg-gray-50 rounded-lg">
                   Notifications {unreadCount > 0 && `(${unreadCount})`}

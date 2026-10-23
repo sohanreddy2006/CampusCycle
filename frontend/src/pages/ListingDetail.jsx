@@ -274,7 +274,7 @@ function ListingDetail() {
 
               {!isOwner && user && (
                 <Link
-                  to={`/messages?user=${listing.owner?._id}`}
+                  to={`/messages?user=${listing.owner?._id}&listing=${listing._id}`}
                   className="flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700"
                 >
                   <MessageCircle className="h-4 w-4" />
@@ -328,7 +328,7 @@ function ListingDetail() {
                   </div>
                   {isOwner && (
                     <Link
-                      to={`/messages?user=${listing.reservedBy._id}`}
+                      to={`/messages?user=${listing.reservedBy._id}&listing=${listing._id}`}
                       className="flex items-center gap-1 px-3 py-1 bg-white border border-yellow-300 rounded-lg text-sm font-medium text-yellow-800 hover:bg-yellow-100"
                     >
                       <MessageCircle className="h-4 w-4" />

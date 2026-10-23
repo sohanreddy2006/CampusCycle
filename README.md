@@ -433,8 +433,10 @@ SUPPLY → DEMAND → DISCOVERY → MATCHING → EXCHANGE/RENTAL → RATING & HI
 |--------|-------|-------------|--------|
 | GET | `/api/conversations` | Get conversations | Protected |
 | POST | `/api/conversations` | Start conversation | Protected |
+| GET | `/api/conversations/unread-count` | Get unread message count | Protected |
 | GET | `/api/conversations/:id/messages` | Get messages | Protected |
 | POST | `/api/conversations/:id/messages` | Send message | Protected |
+| PUT | `/api/conversations/:id/read` | Mark conversation read | Protected |
 
 ### Reports
 | Method | Route | Description | Access |
@@ -810,8 +812,8 @@ Registration only accepts university email addresses matching `UNIVERSITY_EMAIL_
 - [ ] Follow tag notifications
 
 ### ⏳ Phase 3: Communication & Safety (Week 3) - PENDING
-- [ ] Conversation list
-- [ ] Real-time chat (Socket.io)
+- [x] Conversation list
+- [x] Real-time chat (Socket.io)
 - [ ] Message reporting
 - [ ] Post-exchange rating system
 - [ ] Report listing/message/user
